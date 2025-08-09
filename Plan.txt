@@ -1,0 +1,276 @@
+# Python Log Viewer Application Plan
+
+## Project Overview
+Build a configurable log viewer application that parses structured logs based on a JSON configuration file, with filtering capabilities and clean display formatting.
+
+## Architecture & Components
+
+### 1. Core Modules
+
+#### 1.1 Config Manager (`config_manager.py`)
+- **Purpose**: Load and validate configuration from JSON file
+- **Key Functions**:
+  - `load_config(filepath)`: Load JSON configuration
+  - `validate_config(config)`: Ensure all required fields exist
+  - `get_delimiters()`: Return delimiter configuration
+  - `get_categories()`: Return sorted categories by order
+
+#### 1.2 Log Parser (`log_parser.py`)
+- **Purpose**: Parse log strings according to configuration
+- **Key Functions**:
+  - `parse_log_entry(log_string, config)`: Parse single log entry
+  - `parse_structured_string(value, delimiters)`: Parse key-value pairs
+  - `parse_array_string(value, delimiter)`: Parse comma-separated arrays
+  - `extract_multiline_logs(text, start_delim, end_delim)`: Handle multi-line logs
+  - `validate_type(value, expected_type)`: Type validation for each field
+
+#### 1.3 Filter Engine (`filter_engine.py`)
+- **Purpose**: Apply filters to parsed log entries
+- **Key Functions**:
+  - `create_filter(category, operator, value)`: Create filter objects
+  - `apply_filters(logs, filters)`: Apply multiple filters
+  - **Filter Types**:
+    - String: exact match, contains, regex
+    - Datetime: before, after, between
+    - Number: equals, greater than, less than, range
+    - Array: contains element, contains all, contains any
+    - Structured: key exists, key-value match
+
+#### 1.4 Display Formatter (`display_formatter.py`)
+- **Purpose**: Format logs for display
+- **Key Functions**:
+  - `format_table_view(logs)`: Tabular display
+  - `format_detailed_view(log)`: Single log detailed view
+  - `format_multiline(log)`: Handle multi-line log formatting
+  - `colorize_by_level(text, level)`: Add color coding for log levels
+  - `truncate_field(text, max_length)`: Smart truncation for long fields
+
+#### 1.5 GUI Interface (`gui_interface.py`)
+- **Purpose**: Provide graphical user interface
+- **Framework**: tkinter (built-in) or PyQt5 (more features)
+- **Components**:
+  - Filter panel with dynamic inputs based on categories
+  - Log display area with scrolling
+  - Search functionality
+  - Export options
+  - Real-time log tailing option
+
+### 2. Data Models
+
+#### 2.1 LogEntry Class
+```python
+class LogEntry:
+    def __init__(self):
+        self.timestamp = None
+        self.log_level = None
+        self.component = None
+        self.details = {}  # Parsed key-value pairs
+        self.tags = []
+        self.error_code = None
+        self.raw_text = ""
+        self.line_number = None
+```
+
+#### 2.2 FilterRule Class
+```python
+class FilterRule:
+    def __init__(self, category, operator, value):
+        self.category = category
+        self.operator = operator
+        self.value = value
+        self.is_active = True
+```
+
+### 3. Features Implementation
+
+#### 3.1 Multi-line Log Support
+- Detect log boundaries using start/end delimiters
+- Preserve formatting for stack traces and JSON payloads
+- Option to expand/collapse multi-line entries
+
+#### 3.2 Advanced Filtering
+- **Quick Filters**: Pre-defined filters for common scenarios
+- **Filter Combinations**: AND/OR logic between filters
+- **Filter Presets**: Save and load filter configurations
+- **Dynamic Filter UI**: Generate appropriate input widgets based on field type
+
+#### 3.3 Display Options
+- **View Modes**:
+  - Compact: Single line per log
+  - Detailed: Expanded view with all fields
+  - Raw: Original log format
+- **Customizable Columns**: Show/hide specific categories
+- **Sorting**: Sort by any category
+- **Highlighting**: Highlight search terms and filter matches
+
+#### 3.4 Performance Optimization
+- **Lazy Loading**: Load logs in chunks for large files
+- **Indexing**: Create indices for frequently filtered fields
+- **Caching**: Cache parsed results
+- **Threading**: Parse logs in background thread
+
+### 4. File Structure
+```
+log-viewer/
+├── src/
+│   ├── __init__.py
+│   ├── config_manager.py
+│   ├── log_parser.py
+│   ├── filter_engine.py
+│   ├── display_formatter.py
+│   ├── gui_interface.py
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── log_entry.py
+│   │   └── filter_rule.py
+│   └── utils/
+│       ├── __init__.py
+│       ├── date_utils.py
+│       └── string_utils.py
+├── tests/
+│   ├── test_parser.py
+│   ├── test_filter.py
+│   └── test_config.py
+├── config/
+│   └── default_config.json
+├── examples/
+│   └── sample_logs.txt
+├── requirements.txt
+├── setup.py
+└── README.md
+```
+
+### 5. Dependencies
+```
+# requirements.txt
+python-dateutil>=2.8.2  # Advanced date parsing
+colorama>=0.4.6         # Cross-platform colored output
+tabulate>=0.9.0         # Table formatting
+PyQt5>=5.15.0           # GUI framework (optional)
+pytest>=7.0.0           # Testing
+```
+
+### 6. Implementation Steps
+
+#### Phase 1: Core Functionality (Week 1)
+1. Set up project structure
+2. Implement config manager
+3. Build basic log parser
+4. Create LogEntry model
+5. Write unit tests for parser
+
+#### Phase 2: Filtering System (Week 2)
+1. Implement filter engine
+2. Create filter rule models
+3. Build filter combination logic
+4. Add type-specific filtering
+5. Test filter functionality
+
+#### Phase 3: Display & Formatting (Week 3)
+1. Implement display formatter
+2. Add color coding support
+3. Create table and detailed views
+4. Handle multi-line formatting
+5. Add export functionality
+
+#### Phase 4: GUI Development (Week 4)
+1. Design UI layout
+2. Implement filter panel
+3. Create log display area
+4. Add search functionality
+5. Implement real-time updates
+
+#### Phase 5: Advanced Features (Week 5)
+1. Add performance optimizations
+2. Implement filter presets
+3. Add log statistics view
+4. Create configuration editor
+5. Add keyboard shortcuts
+
+#### Phase 6: Testing & Polish (Week 6)
+1. Comprehensive testing
+2. Performance profiling
+3. Documentation
+4. Error handling improvements
+5. Package for distribution
+
+### 7. Usage Example
+```python
+from log_viewer import LogViewer
+
+# Initialize viewer with config
+viewer = LogViewer('config.json')
+
+# Load log file
+viewer.load_logs('application.log')
+
+# Apply filters
+viewer.add_filter('LogLevel', 'equals', 'ERROR')
+viewer.add_filter('Timestamp', 'after', '2025-08-08 00:00:00')
+
+# Get filtered results
+filtered_logs = viewer.get_filtered_logs()
+
+# Display in different formats
+viewer.display_table()
+viewer.display_detailed(log_id=5)
+
+# Export results
+viewer.export_to_csv('filtered_logs.csv')
+
+# Launch GUI
+viewer.launch_gui()
+```
+
+### 8. Advanced Features (Optional)
+
+#### 8.1 Real-time Monitoring
+- Watch log files for changes
+- Auto-refresh display
+- Notification system for critical errors
+
+#### 8.2 Log Analysis
+- Statistical analysis (error rates, patterns)
+- Anomaly detection
+- Time-series visualization
+- Generate reports
+
+#### 8.3 Plugin System
+- Custom parsers for specific log formats
+- Custom filters
+- Export plugins
+- Theme support
+
+#### 8.4 Remote Log Support
+- SSH log streaming
+- HTTP API integration
+- Database log sources
+- Cloud log service integration
+
+### 9. Testing Strategy
+
+#### Unit Tests
+- Test each parser function with various inputs
+- Test filter logic for all operators
+- Test configuration validation
+- Test type conversions
+
+#### Integration Tests
+- Test end-to-end log parsing
+- Test filter combinations
+- Test GUI interactions
+- Test file operations
+
+#### Performance Tests
+- Benchmark with large log files (>1GB)
+- Test memory usage
+- Test filter performance
+- Test UI responsiveness
+
+### 10. Documentation Requirements
+- User manual with screenshots
+- API documentation for modules
+- Configuration guide
+- Filter syntax reference
+- Troubleshooting guide
+- Contributing guidelines

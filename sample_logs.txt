@@ -1,0 +1,28 @@
+[2025-08-08 06:50:00|INFO|AuthService|action=login;user=john.doe;status=success|security,user_activity|0]###
+[2025-08-08 06:50:15|ERROR|DatabaseService|action=query;table=users;error=connection_timeout|database,critical|1001]###
+[2025-08-08 06:50:30|WARNING|CacheService|action=evict;size=1024MB;reason=memory_pressure|cache,performance|0]###
+[2025-08-08 06:51:00|INFO|APIGateway|(action=request;endpoint=/api/users;method=GET;status=200)|api,monitoring|0]###
+[2025-08-08 06:51:15|ERROR|PaymentService|(action=charge;amount=99.99;currency=USD;error=invalid_card)|payment,critical|2003]###
+[2025-08-08 06:51:30|DEBUG|AuthService|(action=validate_token;user=jane.smith;result=valid)|security,debug|0]###
+[2025-08-08 06:52:00|INFO|NotificationService|(action=send_email;to=user@example.com;subject=Welcome;status=sent)|notification,email|0]###
+[2025-08-08 06:52:15|ERROR|StorageService|(action=upload;file=document.pdf;size=5MB;error=quota_exceeded)|storage,critical|3001]###
+[2025-08-08 06:52:30|WARNING|RateLimiter|(action=throttle;ip=192.168.1.100;requests=150;limit=100)|security,rate_limit|0]###
+[2025-08-08 06:53:00|INFO|AnalyticsService|(action=track;event=page_view;user=anonymous;page=/home)|analytics,tracking|0]###
+[2025-08-08 07:00:00|ERROR|ApplicationService|(action=startup;phase=initialization;error=config_missing)|system,critical|5001]###
+[2025-08-08 07:00:15|ERROR|DatabaseService|action=query;sql=SELECT * FROM users WHERE id = ?;error=SQL syntax error
+Stack trace:
+  at Database.query (db.js:125)
+  at UserService.getUser (user.js:45)
+  at APIHandler.handle (api.js:78)
+|database,error|1002]###
+[2025-08-08 07:00:30|INFO|HealthCheck|action=ping;services=database,cache,queue;status=all_healthy|monitoring,health|0]###
+[2025-08-08 07:01:00|ERROR|PaymentGateway|action=process_payment;request={
+  "amount": 150.00,
+  "currency": "USD",
+  "card": "****1234",
+  "merchant": "ACME Corp"
+};response={
+  "status": "declined",
+  "reason": "insufficient_funds",
+  "code": "DECLINED_001"
+}|payment,critical|2005]###

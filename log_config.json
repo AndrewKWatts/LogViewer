@@ -1,0 +1,75 @@
+{
+    "logViewerConfig": {
+        "LogFileFilters": [".txt",".log"],
+        "DefaultAutoRefresh": false,
+        "RefreshInterval": 5,
+        "delimiters": {
+            "logStartDelimiter": ["["],
+            "logEndDelimiter": ["]"],
+            "ContainerStartDelimiter": ["{", "["],
+            "ContainerEndDelimiter": ["}", "]"],
+            "categorySeparator": ["|"],
+            "keyValuePairsSeparator": [";", "&"],
+            "keyValueSeparator": ["=", ":"],
+            "arrayElementSeparator": [",", ";"]
+        },
+        "categories": [
+            {
+                "name": "Timestamp",
+                "type": "datetime",
+                "order": 1
+            },
+            {
+                "name": "LogLevel",
+                "type": "string",
+                "order": 2,
+                "ColourType": "WholeLine",
+				"Colouring": "Text",
+                "ColourMap": {
+                    "220,20,60": "ERROR,CRITICAL,FATAL",
+                    "255,165,0": "WARNING,WARN",
+                    "34,139,34": "INFO,INFORMATION",
+                    "128,128,128": "DEBUG,TRACE"
+                }
+            },
+            {
+                "name": "Component",
+                "type": "string",
+                "order": 3,
+                "ColourType": "LineNumber",
+				"Colouring": "Background",
+                "ColourMap": {
+                    "139,0,0": "DatabaseService,DbService,Database",
+                    "0,0,139": "PaymentService,Payment,PaySvc",
+                    "128,0,128": "AuthService,Authentication,Auth",
+                    "255,20,147": "ApplicationService,AppService,App",
+                    "0,128,128": "StorageService,Storage,FileService"
+                }
+            },
+            {
+                "name": "Details",
+                "type": "string",
+                "order": 4,
+                "description": "This field can contain key-value pairs or other structured data."
+            },
+            {
+                "name": "Tags",
+                "type": "string",
+                "order": 5,
+                "description": "This field can contain a comma-separated list of tags."
+            },
+            {
+                "name": "ErrorCode",
+                "type": "number",
+                "order": 6,
+                "ColourType": "SpecificValue",
+				"Colouring": "Text",
+                "ColourMap": {
+                    "34,139,34": "0",
+                    "255,165,0": "1000-2000",
+                    "220,20,60": "3000-6000"
+                }
+            }
+        ]
+    }
+}
